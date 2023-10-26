@@ -1,15 +1,17 @@
 <h1>Manage users</h1>
 
 <script>
-    $(document).on('click', '#add-criterion', function() {
-        var newCriterion = $('.search-criterion:first').clone();
-        newCriterion.find('select').val('');
-        newCriterion.find('input[type="text"]').val('');
-        $('#search-criteria').append(newCriterion);
-    });
+    $(document).ready(function() {
+        $('#add-field').on('click', function() {
+            var newField = $('.search-criterion:first').clone(); // Clone the first search criterion
+            newField.find('input[type="text"]').val(''); // Clear input values
+            newField.find('.remove-criterion').prop('disabled', false); // Enable the Remove button
+            $('#search-fields').append(newField); // Append the cloned field to the search fields container
+        });
 
-    $(document).on('click', '.remove-criterion', function() {
-        $(this).closest('.search-criterion').remove();
+        $(document).on('click', '.remove-criterion', function() {
+            $(this).closest('.search-criterion').remove();
+        });
     });
 </script>
 
@@ -19,10 +21,19 @@
 <input type='submit' value='Edit'/>
 <% end %>
 
-<%= form_tag :action => 'list', :paginate_show => '1', :num_users => @per_page do %>
-  <%= label_tag :letter, 'Search users: ' %><%= text_field_tag(:letter,params[:letter]) %>
-<%= select_tag(:search_by, options_for_select([['Username', 1], ['Full name', 2], ['Email', 3]])) %>
-<%= submit_tag("Search") %>
+<%= form_tag({ action: 'list', paginate_show: '1', num_users: @per_page }, method: 'get') do %>
+  <div id="search-fields">
+    <div class="search-criterion">
+      <%= label_tag :letter, 'Search users: ' %>
+      <%= text_field_tag(:letter, params[:letter]) %>
+      <%= select_tag(:search_by, options_for_select([['Username', 1], ['Full name', 2], ['Email', 3]])) %>
+      <%= submit_tag("Search") %>
+      <!-- Add a Remove button for the initial field (disabled by default) -->
+      <button type="button" class="remove-criterion" disabled>Remove</button>
+    </div>
+  </div>
+
+  <%= button_tag("Add", id: "add-field") %>
 <% end %>
 
 <%= render :partial => 'links' %>
