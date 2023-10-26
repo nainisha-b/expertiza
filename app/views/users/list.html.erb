@@ -1,5 +1,18 @@
 <h1>Manage users</h1>
 
+<script>
+    $(document).on('click', '#add-criterion', function() {
+        var newCriterion = $('.search-criterion:first').clone();
+        newCriterion.find('select').val('');
+        newCriterion.find('input[type="text"]').val('');
+        $('#search-fields').append(newCriterion);
+    });
+
+    $(document).on('click', '.remove-criterion', function() {
+        $(this).closest('.search-criterion').remove();
+    });
+</script>
+
 <br/>
 <%= form_tag :action => 'show_if_authorized' do %>
   View user - enter exact login: <%= text_field_with_auto_complete :user, :name, {:size => 41} %>

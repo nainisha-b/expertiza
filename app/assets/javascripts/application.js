@@ -264,18 +264,6 @@ function show_alert(alertMessage){
     });
 }
 
-$(document).on('click', '#add-criterion', function() {
-    var newCriterion = $('.search-criterion:first').clone();
-    newCriterion.find('select').val('');
-    newCriterion.find('input[type="text"]').val('');
-    $('#search-criteria').append(newCriterion);
-});
-
-$(document).on('click', '.remove-criterion', function() {
-    $(this).closest('.search-criterion').remove();
-});
-
-
 /*
 Files I've removed for which I couldn't find any use:
   1.  hoverIntent
