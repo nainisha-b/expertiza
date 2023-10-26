@@ -63,9 +63,10 @@ class UsersController < ApplicationController
   def list
     letter = params[:letter]
     search_by = params[:search_by]
-    # If search parameters present
+
     if letter.present? && search_by.present?
       search_conditions = []
+
       search_by.each do |filter|
         case filter.to_i
         when 1 # Search by Username
@@ -75,11 +76,21 @@ class UsersController < ApplicationController
         when 3 # Search by Email
           search_conditions << ['email LIKE ?', "%#{letter}%"]
         else
-          @paginated_users = paginate_list
+          # You should not set @paginated_users here; instead, it should be an empty array.
+          @paginated_users = []
+          break  # Exit the loop if an invalid filter is encountered.
         end
       end
+
       if search_conditions.present?
-        @paginated_users = paginate_list.where(search_conditions.map { |condition| condition[0] }.join(' AND '), *search_conditions.map { |condition| condition[1] })
+        # You can construct the WHERE clause by mapping search conditions and joining them with 'AND'.
+        where_clause = search_conditions.map { |condition| condition[0] }.join(' AND ')
+        values = search_conditions.map { |condition| condition[1] }
+
+        # Apply the search conditions to the query.
+        @paginated_users = paginate_list.where(where_clause, *values)
+      else
+        @paginated_users = paginate_list
       end
     else
       @paginated_users = paginate_list
