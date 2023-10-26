@@ -12,6 +12,24 @@
             $(this).closest('.search-criterion').remove();
         });
     });
+    $(document).ready(function() {
+        $('#search-form').on('ajax:beforeSend', function() {
+            // This code runs before the form is submitted via AJAX.
+            // You can show a loading indicator here if needed.
+        });
+
+        $('#search-form').on('ajax:success', function(event, data, status, xhr) {
+            // This code runs when the AJAX request is successful.
+            // 'data' contains the response from the server, which should be the updated search results.
+            // You can update your page with the new search results here.
+            $('#search-results').html(data); // Assuming you have a div with the ID 'search-results'.
+        });
+
+        $('#search-form').on('ajax:error', function(event, xhr, status, error) {
+            // This code runs if the AJAX request encounters an error.
+            // You can handle errors here.
+        });
+    });
 </script>
 
 <br/>
@@ -21,7 +39,7 @@
 <% end %>
 
 
-<%= form_tag({ action: 'list', paginate_show: '1', num_users: @per_page }, method: 'get') do %>
+<%= form_tag({ action: 'list', paginate_show: '1', num_users: @per_page }, method: 'get', remote: true, id: 'search-form') do %>
   <div id="search-fields">
     <div class="search-criterion">
       <%= label_tag :letter, 'Search users: ' %>
