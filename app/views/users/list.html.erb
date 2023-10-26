@@ -26,7 +26,7 @@
     <div class="search-criterion">
       <%= label_tag :letter, 'Search users: ' %>
       <%= text_field_tag(:letter, params[:letter]) %>
-      <%= select_tag(:search_by, options_for_select([['Username', 1], ['Full name', 2], ['Email', 3]])) %>
+      <%= select_tag('search_by[]', options_for_select([['Username', 1], ['Full name', 2], ['Email', 3]], params[:search_by]), multiple: true) %>
       <%= submit_tag("Search") %>
       <!-- Add a Remove button for the initial field (disabled by default) -->
       <button type="button" class="remove-criterion" disabled>Remove</button>
