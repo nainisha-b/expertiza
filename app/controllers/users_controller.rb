@@ -69,9 +69,9 @@ class UsersController < ApplicationController
       search_by.each do |filter|
         case filter.to_i
         when 1 # Search by Username
-          search_conditions << ['username LIKE ?', "%#{letter}%"]
+          search_conditions << ['name LIKE ?', "%#{letter}%"]
         when 2 # Search by Full Name
-          search_conditions << ['full_name LIKE ?', "%#{letter}%"]
+          search_conditions << ['fullname LIKE ?', "%#{letter}%"]
         when 3 # Search by Email
           search_conditions << ['email LIKE ?', "%#{letter}%"]
         else
