@@ -1,19 +1,16 @@
 <h1>Manage users</h1>
 
 <script>
-    function addCriterion() {
+    $(document).on('click', '#add-criterion', function() {
         var newCriterion = $('.search-criterion:first').clone();
         newCriterion.find('select').val('');
         newCriterion.find('input[type="text"]').val('');
-        $('#search-fields').append(newCriterion);
-    }
+        $('#search-criteria').append(newCriterion);
+    });
 
-    function removeCriterion() {
+    $(document).on('click', '.remove-criterion', function() {
         $(this).closest('.search-criterion').remove();
-    }
-
-    $(document).on('click', '#add-criterion', addCriterion);
-    $(document).on('click', '.remove-criterion', removeCriterion);
+    });
 </script>
 
 <br/>

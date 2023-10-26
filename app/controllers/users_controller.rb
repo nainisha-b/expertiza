@@ -61,22 +61,33 @@ class UsersController < ApplicationController
 
   # for displaying the list of users
   def list
-    letter = params[:letter]
-    search_by = params[:search_by]
-    # If search parameters present
-    if letter.present? && search_by.present?
-      case search_by.to_i
-      when 1 # Search by username
-        @paginated_users = paginate_list.where('name LIKE ?', "%#{letter}%")
-      when 2 # Search by fullname
-        @paginated_users = paginate_list.where('fullname LIKE ?', "%#{letter}%")
-      when 3 # Search by email
-        @paginated_users = paginate_list.where('email LIKE ?', "%#{letter}%")
-      else
-        @paginated_users = paginate_list
-      end
-    else # Display all users if no search parameters present
-      @paginated_users = paginate_list
+    # letter = params[:letter]
+    # search_by = params[:search_by]
+    # # If search parameters present
+    # if letter.present? && search_by.present?
+    #   case search_by.to_i
+    #   when 1 # Search by username
+    #     @paginated_users = paginate_list.where('name LIKE ?', "%#{letter}%")
+    #   when 2 # Search by fullname
+    #     @paginated_users = paginate_list.where('fullname LIKE ?', "%#{letter}%")
+    #   when 3 # Search by email
+    #     @paginated_users = paginate_list.where('email LIKE ?', "%#{letter}%")
+    #   else
+    #     @paginated_users = paginate_list
+    #   end
+    # else # Display all users if no search parameters present
+    #   @paginated_users = paginate_list
+    # end
+
+    @users = User.all
+
+    search_fields = params[:search_field]
+    search_values = params[:search_value]
+
+    search_fields.each_with_index do |field, index|
+      next if field.blank? || search_values[index].blank?
+
+      @users = @users.where("#{field} LIKE ?", "%#{search_values[index]}%")
     end
   end
 
