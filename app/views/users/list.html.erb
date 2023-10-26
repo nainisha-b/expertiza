@@ -6,10 +6,26 @@
 <input type='submit' value='Edit'/>
 <% end %>
 
-<%= form_tag :action => 'list', :paginate_show => '1', :num_users => @per_page do %>
-  <%= label_tag :letter, 'Search users: ' %><%= text_field_tag(:letter,params[:letter]) %>
-<%= select_tag(:search_by, options_for_select([['Username', 1], ['Full name', 2], ['Email', 3]])) %>
-<%= submit_tag("Search") %>
+<%#= form_tag :action => 'list', :paginate_show => '1', :num_users => @per_page do %>
+  <%#= label_tag :letter, 'Search users: ' %><%#= text_field_tag(:letter,params[:letter]) %>
+<%#= select_tag(:search_by, options_for_select([['Username', 1], ['Full name', 2], ['Email', 3]])) %>
+<%#= submit_tag("Search") %>
+<%# end %>
+
+<%= form_tag({ action: 'list', paginate_show: '1', num_users: @per_page }, method: 'get') do %>
+  <%= label_tag :letter, 'Search users: ' %>
+  <%= text_field_tag(:letter, params[:letter]) %>
+
+  <div id="search-criteria">
+    <div class="search-criterion">
+      <%= select_tag('search_field[]', options_for_select([['Username', 1], ['Full name', 2], ['Email', 3]]), {}, { class: 'search-field' }) %>
+      <%= text_field_tag('search_value[]', params[:search_value], class: 'search-value') %>
+      <%= link_to("Remove", "javascript:void(0);", class: 'remove-criterion') %>
+    </div>
+  </div>
+
+  <%= button_tag("Add Search Criterion", id: "add-criterion") %>
+  <%= submit_tag("Search") %>
 <% end %>
 
 <%= render :partial => 'links' %>
