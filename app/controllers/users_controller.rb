@@ -1,9 +1,9 @@
 require 'will_paginate/array'
-
+require 'logger'
 class UsersController < ApplicationController
   include AuthorizationHelper
   include ConferenceHelper
-
+  logger = Logger.new(STDOUT)
   autocomplete :user, :name
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify method: :post, only: %i[destroy create update],
@@ -63,7 +63,7 @@ class UsersController < ApplicationController
   def list
     letter = params[:letter]
     search_by = params[:search_by]
-    puts search_by
+    logger.debug("Debug message" + search_by)
     # If search parameters present
     if letter.present? && search_by.present?
       search_conditions = []
