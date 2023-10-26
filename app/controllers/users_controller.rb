@@ -61,41 +61,47 @@ class UsersController < ApplicationController
 
   # for displaying the list of users
   def list
-    letter = params[:letter]
-    search_by = params[:search_by]
+    @q = User.ransack(params[:q])
+    scope = @q.result(distinct: true)
+    set_default_sort
+    @pagy, @users = pagy(User.all, items: 20)
 
-    if letter.present? && search_by.present?
-      search_conditions = []
-
-      search_by.each do |filter|
-        case filter.to_i
-        when 1 # Search by Username
-          search_conditions << ['name LIKE ?', "%#{letter}%"]
-        when 2 # Search by Full Name
-          search_conditions << ['fullname LIKE ?', "%#{letter}%"]
-        when 3 # Search by Email
-          search_conditions << ['email LIKE ?', "%#{letter}%"]
-        else
-          # You should not set @paginated_users here; instead, it should be an empty array.
-          @paginated_users = []
-          break  # Exit the loop if an invalid filter is encountered.
-        end
-      end
-
-      if search_conditions.present?
-        # You can construct the WHERE clause by mapping search conditions and joining them with 'AND'.
-        where_clause = search_conditions.map { |condition| condition[0] }.join(' AND ')
-        values = search_conditions.map { |condition| condition[1] }
-
-        # Apply the search conditions to the query.
-        @paginated_users = paginate_list.where(where_clause, *values)
-      else
-        @paginated_users = paginate_list
-      end
-    else
-      @paginated_users = paginate_list
-    end
+    # letter = params[:letter]
+    # search_by = params[:search_by]
+    #
+    # if letter.present? && search_by.present?
+    #   search_conditions = []
+    #
+    #   search_by.each do |filter|
+    #     case filter.to_i
+    #     when 1 # Search by Username
+    #       search_conditions << ['name LIKE ?', "%#{letter}%"]
+    #     when 2 # Search by Full Name
+    #       search_conditions << ['fullname LIKE ?', "%#{letter}%"]
+    #     when 3 # Search by Email
+    #       search_conditions << ['email LIKE ?', "%#{letter}%"]
+    #     else
+    #       # You should not set @paginated_users here; instead, it should be an empty array.
+    #       @paginated_users = []
+    #       break  # Exit the loop if an invalid filter is encountered.
+    #     end
+    #   end
+    #
+    #   if search_conditions.present?
+    #     # You can construct the WHERE clause by mapping search conditions and joining them with 'AND'.
+    #     where_clause = search_conditions.map { |condition| condition[0] }.join(' AND ')
+    #     values = search_conditions.map { |condition| condition[1] }
+    #
+    #     # Apply the search conditions to the query.
+    #     @paginated_users = paginate_list.where(where_clause, *values)
+    #   else
+    #     @paginated_users = paginate_list
+    #   end
+    # else
+    #   @paginated_users = paginate_list
+    # end
   end
+
 
   # for displaying users which are being searched for editing purposes after checking whether current user is authorized to do so
   def show_if_authorized
@@ -265,32 +271,37 @@ class UsersController < ApplicationController
   end
 
   # For filtering the users list with proper search and pagination.
-  def paginate_list
-    paginate_options = { '1' => 25, '2' => 50, '3' => 100 }
-
-    # If the above hash does not have a value for the key,
-    # it means that we need to show all the users on the page
-    #
-    # Just a point to remember, when we use pagination, the
-    # 'users' variable should be an object, not an array
-
-    # The type of condition for the search depends on what the user has selected from the search_by dropdown
-    @search_by = params[:search_by]
-    @per_page = 3
-    # search for corresponding users
-    # users = User.search_users(role, user_id, letter, @search_by)
-
-    # paginate
-    users = if paginate_options[@per_page.to_s].nil? # displaying all - no pagination
-              User.paginate(page: params[:page], per_page: User.count)
-            else # some pagination is active - use the per_page
-              User.paginate(page: params[:page], per_page: paginate_options[@per_page.to_s])
-            end
-    users
-  end
+  # def paginate_list
+  #   paginate_options = { '1' => 25, '2' => 50, '3' => 100 }
+  #
+  #   # If the above hash does not have a value for the key,
+  #   # it means that we need to show all the users on the page
+  #   #
+  #   # Just a point to remember, when we use pagination, the
+  #   # 'users' variable should be an object, not an array
+  #
+  #   # The type of condition for the search depends on what the user has selected from the search_by dropdown
+  #   @search_by = params[:search_by]
+  #   @per_page = 3
+  #   # search for corresponding users
+  #   # users = User.search_users(role, user_id, letter, @search_by)
+  #
+  #   # paginate
+  #   users = if paginate_options[@per_page.to_s].nil? # displaying all - no pagination
+  #             User.paginate(page: params[:page], per_page: User.count)
+  #           else # some pagination is active - use the per_page
+  #             User.paginate(page: params[:page], per_page: paginate_options[@per_page.to_s])
+  #           end
+  #   users
+  # end
 
   # generate the undo link
   # def undo_link
   #  "<a href = #{url_for(:controller => :versions,:action => :revert,:id => @user.versions.last.id)}>undo</a>"
   # end
+  private
+
+  def set_default_sort
+    @q.sorts = "name asc" if @q.sorts.empty?
+  end
 end
