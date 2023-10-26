@@ -63,6 +63,7 @@ class UsersController < ApplicationController
   def list
     letter = params[:letter]
     search_by = params[:search_by]
+    puts search_by
     # If search parameters present
     if letter.present? && search_by.present?
       search_conditions = []
