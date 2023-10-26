@@ -74,9 +74,13 @@ class UsersController < ApplicationController
           search_conditions << ['full_name LIKE ?', "%#{letter}%"]
         when 3 # Search by Email
           search_conditions << ['email LIKE ?', "%#{letter}%"]
+        else
+          @paginated_users = paginate_list
         end
       end
-      @paginated_users = paginate_list.where(search_conditions.map { |condition| condition[0] }.join(' OR '), *search_conditions.map { |condition| condition[1] })
+      if search_conditions.present?
+        @paginated_users = paginate_list.where(search_conditions.map { |condition| condition[0] }.join(' OR '), *search_conditions.map { |condition| condition[1] })
+      end
     end
   end
   # for displaying users which are being searched for editing purposes after checking whether current user is authorized to do so
