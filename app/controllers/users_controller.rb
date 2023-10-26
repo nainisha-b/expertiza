@@ -79,7 +79,7 @@ class UsersController < ApplicationController
         end
       end
       if search_conditions.present?
-        @paginated_users = paginate_list.where(search_conditions.map { |condition| condition[0] }.join(' OR '), *search_conditions.map { |condition| condition[1] })
+        @paginated_users = paginate_list.where(search_conditions.map { |condition| condition[0] }.join(' AND '), *search_conditions.map { |condition| condition[1] })
       end
     else
       @paginated_users = paginate_list
