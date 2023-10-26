@@ -84,11 +84,12 @@ class UsersController < ApplicationController
     search_fields = params[:search_field]
     search_values = params[:search_value]
 
-    search_fields.each_with_index do |field, index|
-      next if field.blank? || search_values[index].blank?
+    if search_fields && search_values
+      search_fields.each_with_index do |field, index|
+        next if field.blank? || search_values[index].blank?
 
-      @users = @users.where("#{field} LIKE ?", "%#{search_values[index]}%")
-    end
+        @users = @users.where("#{field} LIKE ?", "%#{search_values[index]}%")
+      end
   end
 
   # for displaying users which are being searched for editing purposes after checking whether current user is authorized to do so
