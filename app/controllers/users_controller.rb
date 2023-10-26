@@ -61,9 +61,10 @@ class UsersController < ApplicationController
 
   # for displaying the list of users
   def list
+    letter = params[:letter]
     search_by = params[:search_by]
     # If search parameters present
-    if  search_by.present?
+    if letter.present? && search_by.present?
       case search_by.to_i
       when 1 # Search by username
         @paginated_users = paginate_list.where('name LIKE ?', "%#{letter}%")
