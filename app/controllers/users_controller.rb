@@ -61,12 +61,21 @@ class UsersController < ApplicationController
 
   # for displaying the list of users
   def list
-    search_fields = params[:search_field]
-    search_values = params[:search_value]
+    search_by = params[:search_by]
     # If search parameters present
-    search_fields.each_with_index do |field, index|
-      next if field.blank? || search_values[index].blank?
-      @paginated_users = paginate_list.where("#{field} LIKE ?", "%#{search_values[index]}%")
+    if  search_by.present?
+      case search_by.to_i
+      when 1 # Search by username
+        @paginated_users = paginate_list.where('name LIKE ?', "%#{letter}%")
+      when 2 # Search by fullname
+        @paginated_users = paginate_list.where('fullname LIKE ?', "%#{letter}%")
+      when 3 # Search by email
+        @paginated_users = paginate_list.where('email LIKE ?', "%#{letter}%")
+      else
+        @paginated_users = paginate_list
+      end
+    else # Display all users if no search parameters present
+      @paginated_users = paginate_list
     end
   end
 
